@@ -6,11 +6,12 @@ from pathlib import Path
 # --- Config ---
 API_URL = "https://api.llmapi.com/chat/completions"
 API_KEY = os.getenv("API_KEY")
+
 INPUT_FILES = {
     'tone': 'input/tone.txt',
     'article': 'input/article.txt'
 }
-OUTPUT_FILE = '2025-04-24-hacker-news-post.md'
+OUTPUT_FILE = '2025-06-21-hacker-news-post.md'
 
 # --- Helper Functions ---
 def read_file(filename):
@@ -23,16 +24,19 @@ def generate_jekyll_post(md_content):
     front_matter = """---
 layout: post
 tags_color: '#666e76'
-title: 'Hacker News Of The Week'
-date: 2025-04-24
-description: Weekly automated blog post based on Hacker News number one topic
-tags: [digitalization, GPT, quote, vibe, tech, debt, chatgpt]
+title: 'A Weekly Automated Post'
+date: 2025-06-21
+description: A blog post generated with LLMs based on this weeks Hacker News
+tags: [digitalization, GPT, hacker, news, tech, LLM, automation, blog]
 categories: digitalization
 comments: true
 image: '/images/posts/2025/weekly.jpg'
 ---
 """
-    return front_matter + f"![](/images/posts/2025/weekly.jpg)\n\n" + md_content
+    disclaimer = """_⚠️ **THIS POST IS GENERATED WITH LLMs**: This post is newly generated each week based on the number one article from hacker news. It takes the tone of my writing style, takes the topic from Hacker News - throws in some LLM magic and generates this post. Please be aware I don't read what gets generated here - it means I may agree, I may not - its a crap shoot - its not meant to be an opinion piece but merely [an experiment](https://github.com/clintjb/Weekly-Post) with the services from LLMAPI.com_
+
+"""
+    return front_matter + f"![](/images/posts/2025/weekly.jpg)\n\n" + disclaimer + md_content
 
 # --- Main Execution ---
 try:
@@ -51,11 +55,21 @@ try:
         "messages": [
             {
                 "role": "system",
-                "content": "You are a casual writer creating blog posts around technology. Mimic the user's style and return content using Markdown formatting."
+                "content": "You are a skilled writer who can perfectly mimic different writing styles while maintaining authenticity and personality."
             },
             {
                 "role": "user",
-                "content": f"Analyze this writing style:\n{tone}\n\nNow write a blog post in THAT style about:\n{article}\nUse Markdown formatting. Ensure its more like a personal blog post (without so many subheadings etc) and ensure there's no reference to the original article to make it appear really like a self written article"
+                "content": f"""Analyze the following writing sample to understand the tone, voice, sentence structure, pacing, and formatting style of the author:
+\n{tone}\n
+
+Now, based on the following content:
+\n{article}\n
+
+Write a blog post in the same style and tone as the writing sample.
+The output should read like a personal blog post, with a natural, reflective, or opinionated voice rather than a journalistic or report-like tone.
+Use Markdown formatting, but avoid overuse of subheadings or bullet points—keep it more fluid and narrative.
+Do not mention or reference the original article or source—make it feel entirely self-written.
+Favor authenticity, personality, and coherence over formality or completeness."""
             }
         ],
         "temperature": 0.9
