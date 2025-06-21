@@ -11,21 +11,21 @@ import logging
 BASE_URL = "https://hacker-news.firebaseio.com/v0"
 OUTPUT_DIR = Path("input")
 FETCH_DELAY = 0.1
-MAX_POSTS_TO_CHECK = 10
+MAX_POSTS = 10
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def get_top_post_last_week():
+def get_top_post():
     """Get highest-scored HN post from last week"""
     try:
         story_ids = requests.get(f"{BASE_URL}/topstories.json").json()
-        one_week_ago = int((datetime.now() - timedelta(days=7)).timestamp())
+        week_ago = (datetime.now() - timedelta(days=7)).timestamp()
         
         top_post = None
-        for story_id in story_ids[:MAX_POSTS_TO_CHECK]:
+        for story_id in story_ids[:MAX_POSTS]:
             story = requests.get(f"{BASE_URL}/item/{story_id}.json").json()
-            if story.get('time', 0) >= one_week_ago and (not top_post or story.get('score', 0) > top_post['score']):
+            if story.get('time', 0) >= week_ago and (not top_post or story['score'] > top_post['score']):
                 top_post = story
             time.sleep(FETCH_DELAY)
         
@@ -35,79 +35,43 @@ def get_top_post_last_week():
         return None
 
 def scrape_article(url):
-    """Simplified article content scraper"""
+    """Get clean article text"""
     try:
-        response = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'}, timeout=10)
+        response = requests.get(url, timeout=10)
         soup = BeautifulSoup(response.text, 'html.parser')
         
-        # Remove unwanted elements
         for element in soup(['script', 'style', 'nav', 'footer', 'iframe']):
             element.decompose()
         
-        # Get clean text with basic spacing
-        text = ' '.join(soup.get_text().split())
-        return text[:10000]  # Limit to first 10k chars to avoid huge files
+        return ' '.join(soup.get_text().split())[:10000]
     except Exception as e:
         logger.warning(f"Error scraping article: {e}")
         return "Could not retrieve article content"
 
-def save_largest_image(url, output_path):
-    """Find and save the largest image from a webpage as weekly.jpg, cropped to 900x600"""
+def save_image(url, output_path):
+    """Save largest image from webpage as weekly.jpg"""
     try:
-        response = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'}, timeout=10)
+        response = requests.get(url, timeout=10)
         soup = BeautifulSoup(response.text, 'html.parser')
-
-        images = []
-        for img in soup.find_all('img', src=True):
-            img_url = img['src'] if img['src'].startswith('http') else f"{url.rstrip('/')}/{img['src'].lstrip('/')}"
-            images.append(img_url)
-
+        
+        img_urls = [img['src'] if img['src'].startswith('http') else f"{url.rstrip('/')}/{img['src'].lstrip('/')}"
+                   for img in soup.find_all('img', src=True)][:5]
+        
         largest = None
-        for img_url in images[:5]:  # Check first 5 images only
+        for img_url in img_urls:
             try:
                 img_data = requests.get(img_url, timeout=5).content
                 img = Image.open(BytesIO(img_data))
                 size = img.size[0] * img.size[1]
                 if not largest or size > largest[0]:
-                    largest = (size, img.copy())  # Copy to keep open reference
-            except Exception as e:
+                    largest = (size, img.copy())
+            except:
                 continue
 
         if largest:
-            img = largest[1]
-            img = img.convert("RGB")  # Convert to RGB to ensure compatibility with JPEG
-            
-            # Calculate target aspect ratio (900:600 = 3:2)
-            target_width, target_height = 900, 600
-            target_aspect = target_width / target_height
-            
-            # Get current dimensions
-            width, height = img.size
-            current_aspect = width / height
-            
-            # Resize and crop
-            if current_aspect > target_aspect:
-                # Image is wider than target - crop sides
-                new_height = height
-                new_width = int(target_aspect * new_height)
-                left = (width - new_width) / 2
-                right = left + new_width
-                top = 0
-                bottom = height
-            else:
-                # Image is taller than target - crop top and bottom
-                new_width = width
-                new_height = int(new_width / target_aspect)
-                top = (height - new_height) / 2
-                bottom = top + new_height
-                left = 0
-                right = width
-            
-            # Crop and resize
-            img = img.crop((left, top, right, bottom))
-            img = img.resize((target_width, target_height), Image.LANCZOS)
-            
-            img.save(output_path / "weekly.jpg", format="JPEG", quality=85)
+            img = largest[1].convert("RGB")
+            img.thumbnail((900, 600))
+            img.save(output_path / "weekly.jpg", "JPEG", quality=85)
             return True
     except Exception as e:
         logger.warning(f"Error saving image: {e}")
@@ -116,28 +80,18 @@ def save_largest_image(url, output_path):
 def main():
     OUTPUT_DIR.mkdir(exist_ok=True)
     
-    logger.info("Finding top HN post from last week...")
-    post = get_top_post_last_week()
-    if not post:
-        logger.error("No suitable post found")
+    logger.info("Finding top HN post...")
+    if not (post := get_top_post()):
+        logger.error("No post found")
         return
     
-    # Save article data
-    article_text = scrape_article(post['url']) if 'url' in post else "No URL available"
     with open(OUTPUT_DIR / "article.txt", 'w') as f:
-        f.write(f"Title: {post.get('title', 'N/A')}\n")
-        f.write(f"Author: {post.get('by', 'N/A')}\n")
-        f.write(f"Score: {post.get('score', 'N/A')}\n")
-        f.write(f"URL: {post.get('url', 'N/A')}\n\n")
-        f.write(article_text)
+        f.write(f"Title: {post.get('title', 'N/A')}\nAuthor: {post.get('by', 'N/A')}\n")
+        f.write(f"Score: {post.get('score', 'N/A')}\nURL: {post.get('url', 'N/A')}\n\n")
+        f.write(scrape_article(post['url']) if 'url' in post else "No URL available")
     
-    # Save image if available
-    if 'url' in post:
-        logger.info("Attempting to save article image...")
-        if save_largest_image(post['url'], OUTPUT_DIR):
-            logger.info("Image saved successfully")
-        else:
-            logger.info("No suitable image found")
+    if 'url' in post and save_image(post['url'], OUTPUT_DIR):
+        logger.info("Image saved")
     
     logger.info(f"Article saved to {OUTPUT_DIR}")
 
