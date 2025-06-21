@@ -1,0 +1,35 @@
+A 40 something year old father, husband, lean, digital enthusiast and aspiring chef! Originally from Australia, but due to some of life's unforeseen adventures am now happily settled in Hamburg Germany.
+I'm deeply passionate about lean, technology and continuous improvement. I love applying these principles to every aspect of my life, whether it's data science, business transformation or my latest experiments in BBQ!
+I've set this site up to act mainly just as a repository of stuff I find interesting & fun - hopefully, others find it the same as well. If you'd like to connect, share a story, or just chat about anything, feel free to explore the site and get in touch.
+
+For 20+ years, I have been honing my skills as a technology and business leader in the fields of operations, digitalization, cost reduction and project management. This experience has been developed in increasingly responsible leadership positions in various industries including automotive, aerospace and military.
+
+Quite often strategies aren’t effectively implemented, as the disconnect between high-level vision and operational reality is never truly closed. I enjoy nothing more than bringing clever, pragmatic solutions to life to solve these complex problems.
+
+I am passionate about applying lean culture and principles to data science, transformation and new technologies - with a focus on truly understanding the impacts and drivers at the operational level.
+
+I love developing teams with an entrepreneurial spirit and get the greatest feeling of satisfaction when employees are enabled to think creatively, practice continuous improvement and focus on the things they do best - bringing value to the business.
+
+I’ve also completed an online MBA developed entirely out of MOOCs from some of the worlds top business programmes. You can find my curriculum & transcript here
+
+Well, here we are again - fifth year in a row (last years here) of keeping up with this little tradition of reflecting on the team’s journey over the year. By now, it’s a staple of my December routine: pour a drink, put on some football, and throw together a quick and dirty wrap-up of our year.
+
+2024 was a year where we saw the team hit new heights — more refinement, maturity, and focus than ever before. It’s been a pleasure watching how we’ve grown, adapted, and continued to deliver value, even through the inevitable challenges that cropped up. This year’s review is a celebration of that progress while acknowledging that the journey is far from over.
+
+As always, this one’s best viewed on a laptop or monitor (mobile optimization still isn’t part of this tradition, it seems). Here’s to another year of achievements, learnings, and looking forward to what’s next.
+
+My son recently got his first PC and we were discussing over breakfast that there’s more you can use PCs for than just playing games! 🤯
+
+This led us to have a think about what interesting projects we could do together over the weekend and hence the idea of creating a profile card of his Fortnite account and all the top stats would be something cool - you can see the final results below:
+
+Our thought process was here was to utilize GitHub actions to automate the pipeline and probably build a variant of the A350 tracking project I created some time ago. So our plan was to come up with a simple workflow running in a Python script, continuously updating via a schedule. The high-level plan was as follows:
+
+So firstly we did a quick search and found FortniteAPI.io which provided quite a number of endpoints - investigating a little more the v1/stats looked exactly like what we were after. We signed up for an account to get the API key, looked up his account ID, and set up a config/function for a simple call:
+
+There are a million versions of this recipe out there, but this is mine that’s always a hit with everyone in the family (not an easy achievement!) The “over the top” method basically means the meat is cooked for the first half of the cook sitting directly over the chili - the advantage of this is that the meat has a different texture and flavor when it is eventually added to the chili - for me it really makes an enormous difference.
+
+This is my own personal recipe that’s a bit of a mix between a traditional jerky and South African Biltong. I’ve seen people do this on smokers as well as traditional hanging - I use a dehydrator but I’m certain the recipe would be great with whatever method you use. If you end up trying it with a different method I would love to hear about it so make sure you drop me a line.
+
+As kids, my brother and I never had particularly much spending money and my parents were both quite thrifty. One of the absolute highlights for me was around once every couple of months or so we were allowed to head down to the local milkbar and grab a pack of Garbage Pail Kids stickers.
+
+Just writing this - I can even smell that disgustingly brittle chewing gum that came in the wax pack. My brother and I would wet ourselves laughing all the way home at the ridiculous artwork - I’m not certain who the artist was that’s recreated these, but as soon as I saw them they instantly put a smile on my face.
