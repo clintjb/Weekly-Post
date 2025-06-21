@@ -52,7 +52,7 @@ def scrape_article(url):
         return "Could not retrieve article content"
 
 def save_largest_image(url, output_path):
-    """Find and save the largest image from a webpage as weekly.jpg"""
+    """Find and save the largest image from a webpage as weekly.jpg, cropped to 900x600"""
     try:
         response = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'}, timeout=10)
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -76,6 +76,37 @@ def save_largest_image(url, output_path):
         if largest:
             img = largest[1]
             img = img.convert("RGB")  # Convert to RGB to ensure compatibility with JPEG
+            
+            # Calculate target aspect ratio (900:600 = 3:2)
+            target_width, target_height = 900, 600
+            target_aspect = target_width / target_height
+            
+            # Get current dimensions
+            width, height = img.size
+            current_aspect = width / height
+            
+            # Resize and crop
+            if current_aspect > target_aspect:
+                # Image is wider than target - crop sides
+                new_height = height
+                new_width = int(target_aspect * new_height)
+                left = (width - new_width) / 2
+                right = left + new_width
+                top = 0
+                bottom = height
+            else:
+                # Image is taller than target - crop top and bottom
+                new_width = width
+                new_height = int(new_width / target_aspect)
+                top = (height - new_height) / 2
+                bottom = top + new_height
+                left = 0
+                right = width
+            
+            # Crop and resize
+            img = img.crop((left, top, right, bottom))
+            img = img.resize((target_width, target_height), Image.LANCZOS)
+            
             img.save(output_path / "weekly.jpg", format="JPEG", quality=85)
             return True
     except Exception as e:
