@@ -2,7 +2,7 @@ name: Weekly Post Generator
 
 on:
   schedule:
-    - cron: '0 12 * * 1'  # Runs every Monday at 12:00 UTC
+    - cron: '0 1 * * 1'
   workflow_dispatch:  # Allow manual triggering
 
 jobs:
@@ -27,20 +27,6 @@ jobs:
         cd Weekly-Post
         pip install -r requirements.txt
 
-    - name: Create tone.txt file
-      run: |
-        cd Weekly-Post
-        mkdir -p input
-        cat > input/tone.txt << 'EOF'
-        # Add your writing style example here
-        # This should be a sample of your writing that the AI will mimic
-        # Replace this with actual content that represents your voice/style
-        I love diving into tech topics that make me think differently about the world. 
-        When I write, I try to keep things conversational but thoughtful - like I'm 
-        explaining something interesting to a friend over coffee. I don't shy away 
-        from complexity, but I always aim to make it accessible.
-        EOF
-
     - name: Run article.py to grab the Hacker News post
       run: |
         cd Weekly-Post
@@ -64,7 +50,7 @@ jobs:
       run: |
         mkdir -p blog-repo/images/posts/2025/
         cp Weekly-Post/input/weekly.jpg blog-repo/images/posts/2025/
-        cp Weekly-Post/2025-04-24-hacker-news-post.md blog-repo/_posts/2025/
+        cp Weekly-Post/2025-06-21-hacker-news-post.md blog-repo/_posts/2025/
 
     - name: Commit and push to blog repo
       run: |
@@ -75,6 +61,6 @@ jobs:
         if git diff --staged --quiet; then
           echo "No changes to commit"
         else
-          git commit -m "Weekly HN Blog Post Update"
+          git commit -m "Updated Weekly Post"
           git push
         fi
