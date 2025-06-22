@@ -7,17 +7,17 @@ from PIL import Image
 from io import BytesIO
 import logging
 
-# Configuration
+# Misc Configuration
 BASE_URL = "https://hacker-news.firebaseio.com/v0"
 OUTPUT_DIR = Path("input")
-FETCH_DELAY = 0.1
-MAX_POSTS = 10
+FETCH_DELAY = 0.1  # Delay between my API calls to be somewhat fair and not get banned
+MAX_POSTS = 10  # Number of top posts to check to find the highest score
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 def get_top_post():
-    """Get highest-scored HN post from last week"""
+    """Grabs the top article from last week: gets the article IDs - filters by date - finds the highest score and returns the best post"""
     try:
         story_ids = requests.get(f"{BASE_URL}/topstories.json").json()
         week_ago = (datetime.now() - timedelta(days=7)).timestamp()
@@ -35,7 +35,7 @@ def get_top_post():
         return None
 
 def scrape_article(url):
-    """Get clean article text"""
+    """BS to scrape the webpage, parses the HTML, removes any unwanted elements (scripts/styles/nav/footer/iframes etc) extracts as clean text, drops it 10k chars and returns the content"""
     try:
         response = requests.get(url, timeout=10)
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -49,7 +49,7 @@ def scrape_article(url):
         return "Could not retrieve article content"
 
 def save_image(url, output_path):
-    """Save largest image from webpage as weekly.jpg"""
+    """Again uses BT to grab the page, parses HTML for images & downloads the first 5, finds the largest image (by pixel count) resizes to max 900x600 and saves as weekly.jpg"""
     try:
         response = requests.get(url, timeout=10)
         soup = BeautifulSoup(response.text, 'html.parser')

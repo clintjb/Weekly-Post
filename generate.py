@@ -3,7 +3,7 @@ import requests
 import markdown
 from pathlib import Path
 
-# --- Config ---
+# Misc Configuration
 API_URL = "https://api.llmapi.com/chat/completions"
 API_KEY = os.getenv("API_KEY")
 
@@ -13,15 +13,16 @@ INPUT_FILES = {
 }
 OUTPUT_FILE = '2025-06-21-hacker-news-post.md'
 
-# --- Helper Functions ---
+# Helper functions & encodings ensuring no issues
 def read_file(filename):
     return Path(filename).read_text(encoding='utf-8')
 
 def write_file(filename, content):
     Path(filename).write_text(content, encoding='utf-8')
 
+# Reads tone/article files, sends to LLM API to generate blog post in my style, wraps it up with my theme header as well as a disclaimer, before saving to an output file
 def generate_jekyll_post(md_content):
-    front_matter = """---
+    theme_header = """---
 layout: post
 tags_color: '#666e76'
 title: 'A Weekly Automated Post'
@@ -36,7 +37,7 @@ image: '/images/posts/2025/weekly.jpg'
     disclaimer = """_⚠️ **THIS POST IS GENERATED WITH LLMs**: This post is newly generated each week based on the number one article from hacker news. It takes the tone of my writing style, takes the topic from Hacker News - throws in some LLM magic and generates this post. Please be aware I don't read what gets generated here - it means I may agree, I may not - its a crap shoot - its not meant to be an opinion piece but merely [an experiment](https://github.com/clintjb/Weekly-Post) with the services from [LLMAPI](https://docs.llmapi.com/quickstart#available-models)_
 
 """
-    return front_matter + f"![](/images/posts/2025/weekly.jpg)\n\n" + disclaimer + md_content
+    return theme_header + f"![](/images/posts/2025/weekly.jpg)\n\n" + disclaimer + md_content
 
 # --- Main Execution ---
 try:
@@ -75,12 +76,12 @@ Favor authenticity, personality, and coherence over formality or completeness.""
         "temperature": 0.9
     }
 
-    # Get LLM response
+    # Get the response from the LLM
     response = requests.post(API_URL, headers=headers, json=payload)
     response.raise_for_status()
     markdown_content = response.json()["choices"][0]["message"]["content"]
 
-    # Save as Jekyll post
+    # Save as a Jekyll post
     write_file(OUTPUT_FILE, generate_jekyll_post(markdown_content))
     
     print("Success: Jekyll post created")
