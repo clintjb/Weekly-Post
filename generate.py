@@ -17,26 +17,29 @@ OUTPUT_FILE = '2025-06-21-hacker-news-post.md'
 def read_file(filename):
     return Path(filename).read_text(encoding='utf-8')
 
+
 def write_file(filename, content):
     Path(filename).write_text(content, encoding='utf-8')
 
+
 def generate_jekyll_post(md_content):
     front_matter = """---
-layout: post
-tags_color: '#666e76'
-title: 'A Weekly Automated Post'
-date: 2025-06-21
-description: A blog post generated with LLMs based on this weeks Hacker News
-tags: [digitalization, GPT, hacker, news, tech, LLM, automation, blog]
-categories: digitalization
-comments: true
-image: '/images/posts/2025/weekly.jpg'
----
-"""
-    disclaimer = """_⚠️ **THIS POST IS GENERATED WITH LLMs**: This post is newly generated each week based on the number one article from hacker news. It takes the tone of my writing style, takes the topic from Hacker News - throws in some LLM magic and generates this post. Please be aware I don't read what gets generated here - it means I may agree, I may not - its a crap shoot - its not meant to be an opinion piece but merely [an experiment](https://github.com/clintjb/Weekly-Post) with the services from LLMAPI.com_
+    layout: post
+    tags_color: '#666e76'
+    title: 'A Weekly Automated Post'
+    date: 2025-06-21
+    description: A blog post generated with LLMs based on this weeks Hacker News
+    tags: [digitalization, GPT, hacker, news, tech, LLM, automation, blog]
+    categories: digitalization
+    comments: true
+    image: '/images/posts/2025/weekly.jpg'
+    ---
+    """
+    disclaimer = """_⚠️ **THIS POST IS GENERATED WITH LLMs**: This post is newly generated each week based on the number one article from hacker news. It takes the tone of my writing style, takes the topic from Hacker News - throws in some LLM magic and generates this post. Please be aware I don't read what gets generated here - it means I may agree, I may not - it's a crap shoot - it's not meant to be an opinion piece but merely [an experiment](https://github.com/clintjb/Weekly-Post) with the services from [LLMAPI](llmapi.com)_
 
-"""
+    """
     return front_matter + f"![](/images/posts/2025/weekly.jpg)\n\n" + disclaimer + md_content
+
 
 # --- Main Execution ---
 try:
@@ -49,7 +52,7 @@ try:
         "Authorization": f"Bearer {API_KEY}",
         "Content-Type": "application/json"
     }
-    
+
     payload = {
         "model": "deepseek-v3",
         "messages": [
@@ -59,17 +62,17 @@ try:
             },
             {
                 "role": "user",
-                "content": f"""Analyze the following writing sample to understand the tone, voice, sentence structure, pacing, and formatting style of the author:
-\n{tone}\n
+                "content": (
+                    f"""Analyze the following writing sample to understand the tone, voice, sentence structure, pacing, and formatting style of the author:\n{tone}\n
 
-Now, based on the following content:
-\n{article}\n
+                        Now, based on the following content:\n{article}\n
 
-Write a blog post in the same style and tone as the writing sample.
-The output should read like a personal blog post, with a natural, reflective, or opinionated voice rather than a journalistic or report-like tone.
-Use Markdown formatting, but avoid overuse of subheadings or bullet points—keep it more fluid and narrative.
-Do not mention or reference the original article or source—make it feel entirely self-written.
-Favor authenticity, personality, and coherence over formality or completeness."""
+                        Write a blog post in the same style and tone as the writing sample.
+                        The output should read like a personal blog post, with a natural, reflective, or opinionated voice rather than a journalistic or report-like tone.
+                        Use Markdown formatting, but avoid overuse of subheadings or bullet points—keep it more fluid and narrative.
+                        Do not mention or reference the original article or source—make it feel entirely self-written.
+                        Favor authenticity, personality, and coherence over formality or completeness."""
+                )
             }
         ],
         "temperature": 0.9
@@ -82,7 +85,7 @@ Favor authenticity, personality, and coherence over formality or completeness.""
 
     # Save as Jekyll post
     write_file(OUTPUT_FILE, generate_jekyll_post(markdown_content))
-    
+
     print("Success: Jekyll post created")
 
 except Exception as e:
