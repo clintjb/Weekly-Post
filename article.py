@@ -73,9 +73,19 @@ def save_image(url, output_path):
             img.thumbnail((900, 600))
             img.save(output_path / "weekly.jpg", "JPEG", quality=85)
             return True
+        
+        # If no image found in article, use the alternative
+        logger.info("No suitable image found in article, using alternative image")
+        alt_url = "https://clintbird.com/images/posts/2025/weekly_alt.jpg"
+        img_data = requests.get(alt_url, timeout=5).content
+        img = Image.open(BytesIO(img_data)).convert("RGB")
+        img.thumbnail((900, 600))
+        img.save(output_path / "weekly.jpg", "JPEG", quality=85)
+        return True
+        
     except Exception as e:
         logger.warning(f"Error saving image: {e}")
-    return False
+        return False
 
 def main():
     OUTPUT_DIR.mkdir(exist_ok=True)
