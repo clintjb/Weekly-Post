@@ -10,8 +10,8 @@ import logging
 # Misc Configuration
 BASE_URL = "https://hacker-news.firebaseio.com/v0"
 OUTPUT_DIR = Path("input")
-FETCH_DELAY = 0.1  # Delay between my API calls to be somewhat fair and not get banned
-MAX_POSTS = 10  # Number of top posts to check to find the highest score
+FETCH_DELAY = 0.2  # Delay between my API calls to be somewhat fair and not get banned
+MAX_POSTS = 50  # Number of top posts to check to find the highest score
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
