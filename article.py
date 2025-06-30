@@ -55,7 +55,7 @@ def save_image(url, output_path):
         soup = BeautifulSoup(response.text, 'html.parser')
         
         img_urls = [img['src'] if img['src'].startswith('http') else f"{url.rstrip('/')}/{img['src'].lstrip('/')}"
-                   for img in soup.find_all('img', src=True)][:5]
+                    for img in soup.find_all('img', src=True)][:5]
         
         largest = None
         for img_url in img_urls:
@@ -65,24 +65,25 @@ def save_image(url, output_path):
                 size = img.size[0] * img.size[1]
                 if not largest or size > largest[0]:
                     largest = (size, img.copy())
-            except:
+            except Exception as inner_e: # Catch specific exceptions for image fetching/opening
+                logger.debug(f"Could not process image {img_url}: {inner_e}") # Use debug for individual image errors
                 continue
 
         if largest:
             img = largest[1].convert("RGB")
             img.thumbnail((900, 600))
             img.save(output_path / "weekly.jpg", "JPEG", quality=85)
+            logger.info("Image found in article and saved.")
             return True
-        
-        # If no image found in article, use the alternative
-        logger.info("No suitable image found in article, using alternative image")
-        alt_url = "https://clintbird.com/images/posts/2025/weekly_alt.jpg"
-        img_data = requests.get(alt_url, timeout=5).content
-        img = Image.open(BytesIO(img_data)).convert("RGB")
-        img.thumbnail((900, 600))
-        img.save(output_path / "weekly.jpg", "JPEG", quality=85)
-        return True
-        
+        else:
+            logger.info("Couldnt find an image - using the backup")
+            alt_url = "https://clintbird.com/images/posts/2025/weekly_alt.jpg"
+            img_data = requests.get(alt_url, timeout=5).content
+            img = Image.open(BytesIO(img_data)).convert("RGB")
+            img.thumbnail((900, 600))
+            img.save(output_path / "weekly.jpg", "JPEG", quality=85)
+            return True
+            
     except Exception as e:
         logger.warning(f"Error saving image: {e}")
         return False
