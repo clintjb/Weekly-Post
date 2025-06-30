@@ -104,7 +104,7 @@ def main():
     if 'url' in post and save_image(post['url'], OUTPUT_DIR):
         logger.info("Image saved")
     
-    logger.info(f"Article saved to {OUTPUT_DIR}")
+    logger.info(f"Article URL: {post.get('url', 'N/A')}")
 
 if __name__ == "__main__":
     main()
