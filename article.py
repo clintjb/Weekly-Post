@@ -3,7 +3,7 @@ import time
 from datetime import datetime, timedelta
 from pathlib import Path
 from bs4 import BeautifulSoup
-from PIL import Image
+from PIL import ImageOps
 from io import BytesIO
 import logging
 
@@ -65,22 +65,22 @@ def save_image(url, output_path):
                 size = img.size[0] * img.size[1]
                 if not largest or size > largest[0]:
                     largest = (size, img.copy())
-            except Exception as inner_e: # Catch specific exceptions for image fetching/opening
-                logger.debug(f"Could not process image {img_url}: {inner_e}") # Use debug for individual image errors
+            except Exception as inner_e:
+                logger.debug(f"Could not process image {img_url}: {inner_e}")
                 continue
 
         if largest:
             img = largest[1].convert("RGB")
-            img.thumbnail((900, 600))
+            img = ImageOps.fit(img, (600, 900), method=Image.ANTIALIAS, centering=(0.5, 0.5))
             img.save(output_path / "weekly.jpg", "JPEG", quality=85)
             logger.info("Image found in article and saved.")
             return True
         else:
-            logger.info("Couldnt find an image - using the backup")
+            logger.info("Couldn't find an image - using the backup")
             alt_url = "https://clintbird.com/images/posts/2025/weekly_alt.jpg"
             img_data = requests.get(alt_url, timeout=5).content
             img = Image.open(BytesIO(img_data)).convert("RGB")
-            img.thumbnail((900, 600))
+            img = ImageOps.fit(img, (600, 900), method=Image.ANTIALIAS, centering=(0.5, 0.5))
             img.save(output_path / "weekly.jpg", "JPEG", quality=85)
             return True
             
