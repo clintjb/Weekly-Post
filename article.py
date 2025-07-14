@@ -3,7 +3,7 @@ import time
 from datetime import datetime, timedelta
 from pathlib import Path
 from bs4 import BeautifulSoup
-from PIL import ImageOps
+from PIL import Image, ImageOps
 from io import BytesIO
 import logging
 
@@ -71,21 +71,22 @@ def save_image(url, output_path):
 
         if largest:
             img = largest[1].convert("RGB")
-            img = ImageOps.fit(img, (600, 900), method=Image.ANTIALIAS, centering=(0.5, 0.5))
+            img = ImageOps.fit(img, (600, 900), method=Image.LANCZOS, centering=(0.5, 0.5))
             img.save(output_path / "weekly.jpg", "JPEG", quality=85)
-            logger.info("Image found in article and saved.")
+            logger.info("Image found in article and saved")
             return True
         else:
             logger.info("Couldn't find an image - using the backup")
             alt_url = "https://clintbird.com/images/posts/2025/weekly_alt.jpg"
             img_data = requests.get(alt_url, timeout=5).content
             img = Image.open(BytesIO(img_data)).convert("RGB")
-            img = ImageOps.fit(img, (600, 900), method=Image.ANTIALIAS, centering=(0.5, 0.5))
+            img = ImageOps.fit(img, (600, 900), method=Image.LANCZOS, centering=(0.5, 0.5))
             img.save(output_path / "weekly.jpg", "JPEG", quality=85)
+            logger.info("Backup image saved")
             return True
             
     except Exception as e:
-        logger.warning(f"Error saving image: {e}")
+        logger.error(f"Error saving image: {e}")
         return False
 
 def main():
@@ -102,7 +103,9 @@ def main():
         f.write(scrape_article(post['url']) if 'url' in post else "No URL available")
     
     if 'url' in post and save_image(post['url'], OUTPUT_DIR):
-        logger.info("Image saved")
+        logger.info("Image saved successfully")
+    else:
+        logger.error("Failed to save image")
     
     logger.info(f"Article URL: {post.get('url', 'N/A')}")
 
