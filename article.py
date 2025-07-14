@@ -71,7 +71,7 @@ def save_image(url, output_path):
 
         if largest:
             img = largest[1].convert("RGB")
-            img = ImageOps.fit(img, (600, 900), method=Image.LANCZOS, centering=(0.5, 0.5))
+            img = ImageOps.fit(img, (900, 600), method=Image.LANCZOS, centering=(0.5, 0.5))
             img.save(output_path / "weekly.jpg", "JPEG", quality=85)
             logger.info("Image found in article and saved")
             return True
@@ -80,7 +80,7 @@ def save_image(url, output_path):
             alt_url = "https://clintbird.com/images/posts/2025/weekly_alt.jpg"
             img_data = requests.get(alt_url, timeout=5).content
             img = Image.open(BytesIO(img_data)).convert("RGB")
-            img = ImageOps.fit(img, (600, 900), method=Image.LANCZOS, centering=(0.5, 0.5))
+            img = ImageOps.fit(img, (900, 600), method=Image.LANCZOS, centering=(0.5, 0.5))
             img.save(output_path / "weekly.jpg", "JPEG", quality=85)
             logger.info("Backup image saved")
             return True
