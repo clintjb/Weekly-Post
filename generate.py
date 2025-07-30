@@ -4,7 +4,7 @@ import markdown
 from pathlib import Path
 
 # Misc Configuration
-API_URL = "https://api.llmapi.com/chat/completions"
+API_URL = "https://openrouter.ai/api/v1/chat/completions"
 API_KEY = os.getenv("API_KEY")
 
 INPUT_FILES = {
@@ -52,7 +52,7 @@ try:
     }
     
     payload = {
-        "model": "deepseek-v3",
+        "model": "deepseek/deepseek-chat-v3-0324:free",
         "messages": [
             {
                 "role": "system",
