@@ -37,7 +37,7 @@ comments: true
 image: '/images/posts/2025/weekly.jpg'
 ---
 """
-    disclaimer = f"""_⚠️ **THIS POST IS GENERATED WITH LLMs**: This post is newly generated each week based on the number one article from hacker news. It takes the tone of my writing style, takes the topic from Hacker News - throws in some LLM magic and generates this post. Please be aware I don't read what gets generated here - it means I may agree, I may not - its a crap shoot - its not meant to be an opinion piece but merely [an experiment](https://github.com/clintjb/Weekly-Post) with the services from [OpenRouter](https://openrouter.ai) - last updated {TODAY}_
+    disclaimer = f"""_⚠️ **THIS POST IS GENERATED WITH LLMs**: This post is newly generated a few times a week based on trending articles from hacker news. It takes the tone of my writing style, takes the topic from Hacker News - throws in some LLM magic and generates this post. Please be aware I don't read what gets generated here - it means I may agree, I may not - its a crap shoot - its not meant to be an opinion piece but merely [an experiment](https://github.com/clintjb/Weekly-Post) with the services from [OpenRouter](https://openrouter.ai) - last updated {TODAY}_
 
 """
     return theme_header + f"![](/images/posts/2025/weekly.jpg)\n\n" + disclaimer + md_content
