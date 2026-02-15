@@ -55,7 +55,7 @@ try:
     }
     
     payload = {
-        "model": "tngtech/deepseek-r1t2-chimera:free",
+        "model": "deepseek/deepseek-r1-0528:free",
         "messages": [
             {
                 "role": "system",
