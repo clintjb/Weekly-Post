@@ -55,7 +55,7 @@ try:
     }
     
     payload = {
-        "model": "deepseek/deepseek-r1-0528:free",
+        "model": "qwen/qwen3-235b-a22b-thinking-2507",
         "messages": [
             {
                 "role": "system",
