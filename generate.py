@@ -30,7 +30,7 @@ layout: post
 tags_color: '#666e76'
 title: 'A Weekly Automated Post'
 date: 2025-06-21
-description: A blog post generated with LLMs based on this weeks Hacker News
+description: A blog post generated with LLMs based on this weeks Hacker News.
 tags: [digitalization, GPT, hacker, news, tech, LLM, automation, blog]
 categories: digitalization
 comments: true
