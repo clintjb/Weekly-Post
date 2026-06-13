@@ -4,7 +4,7 @@ import markdown
 from pathlib import Path
 from datetime import datetime
 
-# Misc Configuration
+# Misc Config
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
 API_KEY = os.getenv("API_KEY")
 
