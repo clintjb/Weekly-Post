@@ -32,7 +32,7 @@ title: 'A Weekly Automated Post'
 date: 2025-06-21
 description: A blog post generated with LLMs based on this weeks Hacker News.
 tags: [digitalization, GPT, hacker, news, tech, LLM, automation, blog]
-categories: digitalization
+categories: [digitalization]
 comments: true
 image: '/images/posts/2025/weekly.jpg'
 ---
