@@ -1,9 +1,7 @@
 name: Weekly Post Generator
 
 on:
-  schedule:
-    - cron: '0 3 */3 * *'
-  workflow_dispatch:  # Allow manual triggering
+  workflow_dispatch:
 
 jobs:
   generate-post:
